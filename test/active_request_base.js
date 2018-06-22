@@ -7,7 +7,7 @@
 'use strict';
 
 const axios = require('axios');
-const ActiveRecord = require('../../');
+const ActiveRecord = require('../');
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // axios.defaults.timeout = 0;
@@ -16,7 +16,7 @@ const api = {};
 
 // Financing
 api.financing = axios.create({
-  baseURL: 'http://127.0.0.1:3000',
+  baseURL: process.env.ACTIVE_REQUEST_TEST_DB,
 });
 
 class ActiveRequestBase extends ActiveRequest {
