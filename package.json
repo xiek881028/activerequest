@@ -1,0 +1,26 @@
+{
+  "name": "activerequest",
+  "version": "0.0.1",
+  "description": "Request as resource",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiewulong/activerequest.git"
+  },
+  "keywords": [
+    "active",
+    "request",
+    "record",
+    "resource",
+    "ajax"
+  ],
+  "author": "xiewulong <xiewulong@vip.qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xiewulong/activerequest/issues"
+  },
+  "homepage": "https://github.com/xiewulong/activerequest#readme"
+}
