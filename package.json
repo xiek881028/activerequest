@@ -1,6 +1,6 @@
 {
   "name": "activerequest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Request as resource",
   "main": "index.js",
   "scripts": {

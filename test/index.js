@@ -10,25 +10,28 @@ const assert = require('assert');
 const faker = require('faker/locale/zh_CN');
 const User = require('./user');
 
-// const mobile = faker.phone.phoneNumber('188########');
-// const mobile_final = faker.phone.phoneNumber('188########');
-// // const mobile_final = '18888888888';
-// const password = '123456';
-// const password_updated = '012345';
-// const id_card_number = '123456789012345678';
-// const mongoid = '5b2b58e29c66f22aa192a9e9';
-// const sms_code = '123456';
-// const user = new User;
+const user = new User;
 
-// describe(`Model User - 用户`, async () => {
+describe(`Model User - 用户`, async () => {
 
-//   it(`signup({mobile: '${mobile}', sms_code: '${sms_code}'}) - 验证注册短信验证码`, async () => {
-//     let sms = new Sms;
-//     await sms.send({business: 'signup', mobile});
-//     !sms.is_valid && assert.fail(sms.error_messages.join(','));
+  it(`assign_attributes({balance: 100}) - 非格式化赋属性值`, async () => {
+    user.assign_attributes({balance: 100});
+    assert.equal(user.balance, 100, 'It should be 100 when unformat assign');
+  });
 
-//     await user.signup_sms_verify({mobile, sms_code});
-//     assert.equal(user.is_valid, true, user.error_messages.join(','));
-//   });
+  it(`assign_attributes({balance: 100}, true) - 格式化赋属性值`, async () => {
+    user.assign_attributes({balance: 100}, true);
+    assert.equal(user.balance, 1, 'It should be 1 when format assign');
+  });
 
-// });
+  it(`extract_attributes(['balance']) - 非格式化提取属性值`, async () => {
+    let attributes = user.extract_attributes(['balance']);
+    assert.equal(attributes.balance, 1, 'It should be 1 when unformat extract');
+  });
+
+  it(`extract_attributes(['balance'], true) - 格式化提取属性值`, async () => {
+    let attributes = user.extract_attributes(['balance'], true);
+    assert.equal(attributes.balance, 100, 'It should be 1 when format extract');
+  });
+
+});

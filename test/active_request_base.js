@@ -7,7 +7,7 @@
 'use strict';
 
 const axios = require('axios');
-const ActiveRecord = require('../');
+const ActiveRequest = require('../');
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // axios.defaults.timeout = 0;
@@ -40,7 +40,7 @@ class ActiveRequestBase extends ActiveRequest {
 
   /**
    * 定义属性(字段)配置
-   * 保留字: _attributes, _attributes_changed, _attributes_stored, _caches, _primary_key, add_error, api, assign_attributes, attribute, attributes, belongs_to, cache, caches, clear_errors, error_messages, errors, extract_attributes, has_many, has_one, is_changed, is_new_record, is_valid, store_attributes
+   * 保留字: _attributes, _attributes_changed, _attributes_stored, _caches, _primary_key, add_error, assign_attributes, attribute, attributes, belongs_to, cache, caches, clear_errors, error_messages, errors, extract_attributes, has_many, has_one, is_changed, is_new_record, is_valid, store_attributes
    * 属性(字段)名如果和保留字冲突, 请适当调整, 以避免覆盖model定义好的方法
    *
    * @since 0.0.1
@@ -48,14 +48,19 @@ class ActiveRequestBase extends ActiveRequest {
    * @param {string} default 默认值
    * @param {boolean} confirmation 校验两个文本字段的值是否完全相同
    * @param {array} exclusion 校验是否不在指定的集合中
+   * @param {object} format 格式化定义
+   * @param {string|function} format.assign 格式化赋属性值, 优先级高于in
+   * @param {string|function} format.extract 格式化提取属性值, 优先级高于out
+   * @param {string|function} format.in 格式化赋属性值, assign的别名, 优先级低于assign
+   * @param {string|function} format.out 格式化提取属性值, extract的别名, 优先级低于extract
    * @param {function} if 判断是否需要校验
    * @param {array} inclusion 校验是否在指定的集合中
-   * @param {object} length 长度校验
+   * @param {boolean|object} length 长度校验
    * @param {integer} length.is 校验长度必须等于指定值
    * @param {integer} length.maximum 校验长度不能比指定的长度长
    * @param {integer} length.minimum 校验长度不能比指定的长度短
    * @param {regex} match 校验是否匹配指定的正则表达式
-   * @param {object} numericality 校验是否只包含数字
+   * @param {boolean|object} numericality 校验是否只包含数字
    * @param {number} numericality.equal_to 校验必须等于指定的值
    * @param {number} numericality.greater_than 校验必须比指定的值大
    * @param {number} numericality.greater_than_or_equal_to 校验必须大于或等于指定的值
@@ -70,7 +75,7 @@ class ActiveRequestBase extends ActiveRequest {
    * @param {boolean} presence 校验必须为非空
    * @param {boolean} primary_key 是否为主键
    * @param {regex} unmatch 校验是否不匹配指定的正则表达式
-   * @param {function|string} validator 自定义验证
+   * @param {string|function} validator 自定义验证
    * @param {array} validators 验证器
    * @return {object}
    */

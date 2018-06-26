@@ -6,6 +6,10 @@
  */
 'use strict';
 
+const DEFAULT_OPTIONS = {
+  format: false, // 初始化时格式化赋属性值, 默认false
+};
+
 const DEFAULT_VALIDATE_ATTRIBUTE_NAMES = [
   'absence',
   'confirmation',
@@ -24,6 +28,8 @@ const DEFAULT_VALIDATE_ATTRIBUTE_NAMES = [
 module.exports = module.exports.default = class ActiveRequest {
 
   constructor(attributes = {}, options = {}) {
+    this.options = Object.assign({}, DEFAULT_OPTIONS, options);
+
     Object.defineProperties(this, {
       _attributes: {
         configurable: true,
@@ -63,7 +69,7 @@ module.exports = module.exports.default = class ActiveRequest {
       },
     });
 
-    for(let _attribute, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
+    for(let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
       _key = _keys[i];
       _attribute = _attributes[_key];
 
@@ -82,9 +88,23 @@ module.exports = module.exports.default = class ActiveRequest {
         this._primary_key = _key;
       }
 
+      _format_assign = (value) => value;
+      if(this.options.format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
+        _format_assign = _attribute.format.assign || _attribute.format.in;
+        if(typeof _format_assign == 'string') {
+          _format_assign = this[_format_assign];
+          if(!_format_assign) {
+            throw new Error(`Attribute ${_key} format assign/in method is undefined`);
+          }
+        }
+      }
+
       if(_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
-        this._attributes[_key] = this._attributes_stored[_key] = attributes[_attribute.original_name];
+        this._attributes[_key] = this._attributes_stored[_key] = _format_assign.call(this, attributes[_attribute.original_name]);
         delete attributes[_attribute.original_name];
+      } else if(attributes[_key] !== undefined) {
+        this._attributes[_key] = this._attributes_stored[_key] = _format_assign.call(this, attributes[_key]);
+        delete attributes[_key];
       } else if(_attribute.default !== undefined) {
         this._attributes[_key] = this._attributes_stored[_key] = _attribute.default;
       }
@@ -121,14 +141,19 @@ module.exports = module.exports.default = class ActiveRequest {
    * @param {string} default 默认值
    * @param {boolean} confirmation 校验两个文本字段的值是否完全相同
    * @param {array} exclusion 校验是否不在指定的集合中
+   * @param {object} format 格式化定义
+   * @param {string|function} format.assign 格式化赋属性值, 优先级高于in
+   * @param {string|function} format.extract 格式化提取属性值, 优先级高于out
+   * @param {string|function} format.in 格式化赋属性值, assign的别名, 优先级低于assign
+   * @param {string|function} format.out 格式化提取属性值, extract的别名, 优先级低于extract
    * @param {function} if 判断是否需要校验
    * @param {array} inclusion 校验是否在指定的集合中
-   * @param {object} length 长度校验
+   * @param {boolean|object} length 长度校验
    * @param {integer} length.is 校验长度必须等于指定值
    * @param {integer} length.maximum 校验长度不能比指定的长度长
    * @param {integer} length.minimum 校验长度不能比指定的长度短
    * @param {regex} match 校验是否匹配指定的正则表达式
-   * @param {object} numericality 校验是否只包含数字
+   * @param {boolean|object} numericality 校验是否只包含数字
    * @param {number} numericality.equal_to 校验必须等于指定的值
    * @param {number} numericality.greater_than 校验必须比指定的值大
    * @param {number} numericality.greater_than_or_equal_to 校验必须大于或等于指定的值
@@ -143,7 +168,7 @@ module.exports = module.exports.default = class ActiveRequest {
    * @param {boolean} presence 校验必须为非空
    * @param {boolean} primary_key 是否为主键
    * @param {regex} unmatch 校验是否不匹配指定的正则表达式
-   * @param {function|string} validator 自定义验证
+   * @param {string|function} validator 自定义验证
    * @param {array} validators 验证器
    * @return {object}
    */
@@ -172,22 +197,36 @@ module.exports = module.exports.default = class ActiveRequest {
    *
    * @since 0.0.1
    * @param {object} [attributes={}] 需要更新的属性值
+   * @param {boolean} [format=false] 格式化赋属性值, 默认false
    * @return {this}
    */
-  assign_attributes(attributes = {}) {
+  assign_attributes(attributes = {}, format = false) {
     if(!attributes || !Object.keys(attributes).length) {
       return this;
     };
 
-    for(let _attribute, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
+    for(let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
       _key = _keys[i];
       _attribute = _attributes[_key];
-      if(!_attribute.original_name || attributes[_attribute.original_name] === undefined) {
-        continue;
+
+      _format_assign = (value) => value;
+      if(format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
+        _format_assign = _attribute.format.assign || _attribute.format.in;
+        if(typeof _format_assign == 'string') {
+          _format_assign = this[_format_assign];
+          if(!_format_assign) {
+            throw new Error(`Attribute ${_key} format assign/in method is undefined`);
+          }
+        }
       }
 
-      this[_key] = attributes[_attribute.original_name];
-      delete attributes[_attribute.original_name];
+      if(_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
+        this[_key] = _format_assign.call(this, attributes[_attribute.original_name]);
+        delete attributes[_attribute.original_name];
+      } else if(attributes[_key] !== undefined) {
+        this[_key] = _format_assign.call(this, attributes[_key]);
+        delete attributes[_key];
+      }
     }
 
     for(let key, keys = Object.keys(attributes), i = 0, len = keys.length; i < len; i++) {
@@ -203,24 +242,38 @@ module.exports = module.exports.default = class ActiveRequest {
    *
    * @since 0.0.1
    * @param {array} [attribute_names=[]] 要输出的属性名列表
-   * @param {string} context 校验上下文
+   * @param {boolean} [format=false] 格式化提取属性值, 默认false
+   * @param {string} [context] 校验上下文
    * @return {object}
    */
-  extract_attributes(attribute_names = [], context) {
+  extract_attributes(attribute_names = [], format = false, context) {
     if(!attribute_names || !attribute_names.length) {
       return {};
     }
 
     let attributes = this.attributes;
     let _attributes = {};
-    for(let _attribute_name, attribute, attribute_name, default_validator, value, i = 0, len = attribute_names.length; i < len; i++) {
+    for(let attribute, attribute_name, default_validator, format_extract, value, i = 0, len = attribute_names.length; i < len; i++) {
       attribute_name = attribute_names[i];
       attribute = attributes[attribute_name];
-      _attributes[attribute && attribute.original_name || attribute_name] = value = this[attribute_name];
 
       if(!attribute) {
         throw new Error(`Attribute ${attribute_name} must be defined`);
       }
+
+      format_extract = (value) => value;
+      if(format && attribute.format && (attribute.format.extract || attribute.format.out)) {
+        format_extract = attribute.format.extract || attribute.format.out;
+        if(typeof format_extract == 'string') {
+          format_extract = this[format_extract];
+          if(!format_extract) {
+            throw new Error(`Attribute ${_key} format extract/out method is undefined`);
+          }
+        }
+      }
+
+      value = this[attribute_name];
+      _attributes[attribute && attribute.original_name || attribute_name] = format_extract.call(this, value);
 
       default_validator = {};
       for(let validate_attribute_name, j = 0, validate_attribute_names_len = DEFAULT_VALIDATE_ATTRIBUTE_NAMES.length; j < validate_attribute_names_len; j++) {
@@ -272,9 +325,9 @@ module.exports = module.exports.default = class ActiveRequest {
           _validator.length.minimum != undefined && value.length < _validator.length.minimum && this.add_error(attribute_name, `${attribute_name}'s length minimum is ${_validator.length.maximum} characters`);
         }
         if(_validator.numericality) {
-          numeric_regex = _validator.numericality.only_integer && /\A[+-]?\d+\z/ || /\A[+-]?\d+(\.\d+)?\z/;
+          numeric_regex = _validator.numericality.only_integer && /^[+-]?\d+$/ || /^[+-]?\d+(\.\d+)?$/;
           if(!numeric_regex.test(value)) {
-            this.add_error(attribute_name, `${attribute_name} must be ${only_integer && 'integer' || 'numeric'}`);
+            this.add_error(attribute_name, `${attribute_name} must be ${_validator.numericality.only_integer && 'integer' || 'numeric'}`);
           } else {
             _validator.numericality.only_integer != undefined && value >= _validator.numericality.less_than_or_equal_to && this.add_error(attribute_name, `${attribute_name} must be less than or equal to ${_validator.numericality.less_than_or_equal_to}`);
             _validator.numericality.equal_to != undefined && value != _validator.numericality.equal_to && this.add_error(attribute_name, `${attribute_name} must be equal to ${_validator.numericality.equal_to}`);
