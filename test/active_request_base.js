@@ -40,7 +40,7 @@ class ActiveRequestBase extends ActiveRequest {
 
   /**
    * 定义属性(字段)配置
-   * 保留字: _attributes, _attributes_changed, _attributes_stored, _caches, _primary_key, add_error, assign_attributes, attribute, attributes, belongs_to, cache, caches, clear_errors, error_messages, errors, extract_attributes, has_many, has_one, is_changed, is_new_record, is_valid, store_attributes
+   * 保留字: _attributes, _attributes_changed, _attributes_stored, _caches, _primary_key, add_error, api, assign_attributes, attribute, attributes, belongs_to, cache, caches, clear_errors, error_messages, errors, extract_attributes, has_many, has_one, is_changed, is_new_record, is_valid, store_attributes
    * 属性(字段)名如果和保留字冲突, 请适当调整, 以避免覆盖model定义好的方法
    *
    * @since 0.0.1
