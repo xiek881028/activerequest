@@ -28,8 +28,6 @@ const DEFAULT_VALIDATE_ATTRIBUTE_NAMES = [
 module.exports = module.exports.default = class ActiveRequest {
 
   constructor(attributes = {}, options = {}) {
-    this.options = Object.assign({}, DEFAULT_OPTIONS, options);
-
     Object.defineProperties(this, {
       _attributes: {
         configurable: true,
@@ -65,6 +63,12 @@ module.exports = module.exports.default = class ActiveRequest {
         configurable: true,
         enumerable: true,
         value: {},
+        writable: true,
+      },
+      options: {
+        configurable: true,
+        enumerable: false,
+        value: Object.assign({}, DEFAULT_OPTIONS, options),
         writable: true,
       },
     });
