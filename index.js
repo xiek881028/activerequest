@@ -25,7 +25,7 @@ const DEFAULT_VALIDATE_ATTRIBUTE_NAMES = [
   'validator',
 ];
 
-module.exports = module.exports.default = class ActiveRequest {
+module.exports.default = module.exports = class ActiveRequest {
 
   constructor(attributes = {}, options = {}) {
     Object.defineProperties(this, {
@@ -73,7 +73,7 @@ module.exports = module.exports.default = class ActiveRequest {
       },
     });
 
-    for(let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
+    for (let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
       _key = _keys[i];
       _attribute = _attributes[_key];
 
@@ -88,33 +88,33 @@ module.exports = module.exports.default = class ActiveRequest {
         },
       });
 
-      if(!this._primary_key && _attribute.primary_key) {
+      if (!this._primary_key && _attribute.primary_key) {
         this._primary_key = _key;
       }
 
-      _format_assign = (value) => value;
-      if(this.options.format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
+      _format_assign = value => value;
+      if (this.options.format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
         _format_assign = _attribute.format.assign || _attribute.format.in;
-        if(typeof _format_assign == 'string') {
+        if (typeof _format_assign == 'string') {
           _format_assign = this[_format_assign];
-          if(!_format_assign) {
+          if (!_format_assign) {
             throw new Error(`Attribute ${_key} format assign/in method is undefined`);
           }
         }
       }
 
-      if(_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
+      if (_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
         this._attributes[_key] = this._attributes_stored[_key] = _format_assign.call(this, attributes[_attribute.original_name]);
         delete attributes[_attribute.original_name];
-      } else if(attributes[_key] !== undefined) {
+      } else if (attributes[_key] !== undefined) {
         this._attributes[_key] = this._attributes_stored[_key] = _format_assign.call(this, attributes[_key]);
         delete attributes[_key];
-      } else if(_attribute.default !== undefined) {
+      } else if (_attribute.default !== undefined) {
         this._attributes[_key] = this._attributes_stored[_key] = _attribute.default;
       }
     }
 
-    for(let key, keys = Object.keys(attributes), i = 0, len = keys.length; i < len; i++) {
+    for (let key, keys = Object.keys(attributes), i = 0, len = keys.length; i < len; i++) {
       key = keys[i];
       this[key] = attributes[key];
     }
@@ -205,35 +205,35 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {this}
    */
   assign_attributes(attributes = {}, format = false) {
-    if(!attributes || !Object.keys(attributes).length) {
+    if (!attributes || !Object.keys(attributes).length) {
       return this;
     };
 
-    for(let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
+    for (let _attribute, _format_assign, _key, _attributes = this.attributes, _keys = Object.keys(_attributes), i = 0, len = _keys.length; i < len; i++) {
       _key = _keys[i];
       _attribute = _attributes[_key];
 
-      _format_assign = (value) => value;
-      if(format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
+      _format_assign = value => value;
+      if (format && _attribute.format && (_attribute.format.assign || _attribute.format.in)) {
         _format_assign = _attribute.format.assign || _attribute.format.in;
-        if(typeof _format_assign == 'string') {
+        if (typeof _format_assign == 'string') {
           _format_assign = this[_format_assign];
-          if(!_format_assign) {
+          if (!_format_assign) {
             throw new Error(`Attribute ${_key} format assign/in method is undefined`);
           }
         }
       }
 
-      if(_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
+      if (_attribute.original_name && attributes[_attribute.original_name] !== undefined) {
         this[_key] = _format_assign.call(this, attributes[_attribute.original_name]);
         delete attributes[_attribute.original_name];
-      } else if(attributes[_key] !== undefined) {
+      } else if (attributes[_key] !== undefined) {
         this[_key] = _format_assign.call(this, attributes[_key]);
         delete attributes[_key];
       }
     }
 
-    for(let key, keys = Object.keys(attributes), i = 0, len = keys.length; i < len; i++) {
+    for (let key, keys = Object.keys(attributes), i = 0, len = keys.length; i < len; i++) {
       key = keys[i];
       this[key] = attributes[key];
     }
@@ -251,26 +251,26 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {object}
    */
   extract_attributes(attribute_names = [], format = false, context) {
-    if(!attribute_names || !attribute_names.length) {
+    if (!attribute_names || !attribute_names.length) {
       return {};
     }
 
     let attributes = this.attributes;
     let _attributes = {};
-    for(let attribute, attribute_name, default_validator, format_extract, value, i = 0, len = attribute_names.length; i < len; i++) {
+    for (let attribute, attribute_name, default_validator, format_extract, value, i = 0, len = attribute_names.length; i < len; i++) {
       attribute_name = attribute_names[i];
       attribute = attributes[attribute_name];
 
-      if(!attribute) {
+      if (!attribute) {
         throw new Error(`Attribute ${attribute_name} must be defined`);
       }
 
-      format_extract = (value) => value;
-      if(format && attribute.format && (attribute.format.extract || attribute.format.out)) {
+      format_extract = value => value;
+      if (format && attribute.format && (attribute.format.extract || attribute.format.out)) {
         format_extract = attribute.format.extract || attribute.format.out;
-        if(typeof format_extract == 'string') {
+        if (typeof format_extract == 'string') {
           format_extract = this[format_extract];
-          if(!format_extract) {
+          if (!format_extract) {
             throw new Error(`Attribute ${_key} format extract/out method is undefined`);
           }
         }
@@ -280,57 +280,57 @@ module.exports = module.exports.default = class ActiveRequest {
       _attributes[attribute && attribute.original_name || attribute_name] = format_extract.call(this, value);
 
       default_validator = {};
-      for(let validate_attribute_name, j = 0, validate_attribute_names_len = DEFAULT_VALIDATE_ATTRIBUTE_NAMES.length; j < validate_attribute_names_len; j++) {
+      for (let validate_attribute_name, j = 0, validate_attribute_names_len = DEFAULT_VALIDATE_ATTRIBUTE_NAMES.length; j < validate_attribute_names_len; j++) {
         validate_attribute_name = DEFAULT_VALIDATE_ATTRIBUTE_NAMES[j];
-        if(attribute[validate_attribute_name] === undefined) continue;
+        if (attribute[validate_attribute_name] === undefined) continue;
         default_validator[validate_attribute_name] = attribute[validate_attribute_name];
       }
-      if(Object.keys(default_validator).length) {
-        if(!attribute.validators) {
+      if (Object.keys(default_validator).length) {
+        if (!attribute.validators) {
           attribute.validators = [];
         }
         attribute.validators.unshift(default_validator);
       }
 
-      if(!attribute.validators || !attribute.validators.length) {
+      if (!attribute.validators || !attribute.validators.length) {
         continue;
       }
 
-      for(let _validator, if_false, numeric_regex, j = 0, validators_len = attribute.validators.length; j < validators_len; j++) {
+      for (let _validator, if_false, numeric_regex, j = 0, validators_len = attribute.validators.length; j < validators_len; j++) {
         _validator = attribute.validators[j];
-        if((_validator.if && !_validator.if.call(this)) || _validator.on && (!context || _validator.on.indexOf(context) === -1)) {
+        if ((_validator.if && !_validator.if.call(this)) || _validator.on && (!context || _validator.on.indexOf(context) === -1)) {
           continue;
         }
 
-        if(_validator.presence && (value === undefined || value === null || value === '')) {
+        if (_validator.presence && (value === undefined || value === null || value === '')) {
           this.add_error(attribute_name, `${attribute_name} is required`);
         }
-        if(_validator.absence && (value !== undefined || value !== null || value !== '')) {
+        if (_validator.absence && (value !== undefined || value !== null || value !== '')) {
           this.add_error(attribute_name, `${attribute_name} is must be blank`);
         }
-        if(_validator.inclusion && _validator.inclusion.indexOf(value) === -1) {
+        if (_validator.inclusion && _validator.inclusion.indexOf(value) === -1) {
           this.add_error(attribute_name, `${attribute_name} is not in ${_validator.inclusion}`);
         }
-        if(_validator.exclusion && _validator.exclusion.indexOf(value) === -1) {
+        if (_validator.exclusion && _validator.exclusion.indexOf(value) === -1) {
           this.add_error(attribute_name, `${attribute_name} is in ${_validator.exclusion}`);
         }
-        if(_validator.match && !_validator.match.test(value)) {
+        if (_validator.match && !_validator.match.test(value)) {
           this.add_error(attribute_name, `${attribute_name} is unmatch ${_validator.match}`);
         }
-        if(_validator.unmatch && _validator.unmatch.test(value)) {
+        if (_validator.unmatch && _validator.unmatch.test(value)) {
           this.add_error(attribute_name, `${attribute_name} is match ${_validator.unmatch}`);
         }
-        if(_validator.confirmation && value != this[`${attribute_name}_confirmation`]) {
+        if (_validator.confirmation && value != this[`${attribute_name}_confirmation`]) {
           this.add_error(attribute_name, `${attribute_name} doesn\'t match ${attribute_name}_confirmation`);
         }
-        if(_validator.length) {
+        if (_validator.length) {
           _validator.length.is != undefined && value.length != _validator.length.is && this.add_error(attribute_name, `${attribute_name}'s length must be ${_validator.length.is} characters`);
           _validator.length.maximum != undefined && value.length > _validator.length.maximum && this.add_error(attribute_name, `${attribute_name}'s length minimum is ${_validator.length.maximum} characters`);
           _validator.length.minimum != undefined && value.length < _validator.length.minimum && this.add_error(attribute_name, `${attribute_name}'s length minimum is ${_validator.length.maximum} characters`);
         }
-        if(_validator.numericality) {
+        if (_validator.numericality) {
           numeric_regex = _validator.numericality.only_integer && /^[+-]?\d+$/ || /^[+-]?\d+(\.\d+)?$/;
-          if(!numeric_regex.test(value)) {
+          if (!numeric_regex.test(value)) {
             this.add_error(attribute_name, `${attribute_name} must be ${_validator.numericality.only_integer && 'integer' || 'numeric'}`);
           } else {
             _validator.numericality.only_integer != undefined && value >= _validator.numericality.less_than_or_equal_to && this.add_error(attribute_name, `${attribute_name} must be less than or equal to ${_validator.numericality.less_than_or_equal_to}`);
@@ -342,8 +342,8 @@ module.exports = module.exports.default = class ActiveRequest {
           }
         }
 
-        if(_validator.validator) {
-          if(typeof _validator.validator === 'string') {
+        if (_validator.validator) {
+          if (typeof _validator.validator === 'string') {
             this[_validator.validator] && this[_validator.validator]();
           } else {
             _validator.validator.call(this);
@@ -362,10 +362,10 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {this}
    */
   store_attributes() {
-    if(!Object.keys(this._attributes_changed).length) {
+    if (!Object.keys(this._attributes_changed).length) {
       return this;
     }
-    for(let key, keys = Object.keys(this._attributes_stored), i = 0, len = keys.length; i < len; i++) {
+    for (let key, keys = Object.keys(this._attributes_stored), i = 0, len = keys.length; i < len; i++) {
       key = keys[i];
       this._attributes_stored[key] = this._attributes[key];
     }
@@ -391,7 +391,7 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {boolean}
    */
   get is_new_record() {
-    if(!this._primary_key) {
+    if (!this._primary_key) {
       return false;
     }
 
@@ -407,7 +407,7 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {this}
    */
   add_error(attribute_name, error_message) {
-    if(!this.errors[attribute_name]) {
+    if (!this.errors[attribute_name]) {
       this.errors[attribute_name] = [];
     }
 
@@ -424,7 +424,7 @@ module.exports = module.exports.default = class ActiveRequest {
    */
   get error_messages() {
     let _error_messages = [];
-    for(let error, keys = Object.keys(this.errors), i = 0, len = keys.length; i < len; i++) {
+    for (let error, keys = Object.keys(this.errors), i = 0, len = keys.length; i < len; i++) {
       _error_messages = _error_messages.concat(this.errors[keys[i]]);
     }
 
@@ -461,21 +461,21 @@ module.exports = module.exports.default = class ActiveRequest {
    * @return {object}
    */
   to_json(attribute_names = []) {
-    if(!attribute_names) {
+    if (!attribute_names) {
       return this;
     }
-    if(attribute_names === true) {
+    if (attribute_names === true) {
       attribute_names = [];
     }
-    if(!attribute_names.length) {
+    if (!attribute_names.length) {
       attribute_names = Object.keys(this.attributes);
     }
-    if(!attribute_names.length) {
+    if (!attribute_names.length) {
       return {};
     }
 
     let _attributes = {};
-    for(let attribute_name, i = 0, len = attribute_names.length; i < len; i++) {
+    for (let attribute_name, i = 0, len = attribute_names.length; i < len; i++) {
       attribute_name = attribute_names[i];
       _attributes[attribute_name] = this[attribute_name];
     };

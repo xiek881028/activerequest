@@ -81,9 +81,9 @@ class ActiveRequestBase extends ActiveRequest {
    */
   get attributes() {
     return {
-      // id: {original_name: 'user_id', primary_key: true}, // ID
-      // username: {original_name: 'userName'}, // 用户名
-      // password: {original_name: 'password_hash'}, // 密码
+      // id: { original_name: 'user_id', primary_key: true }, // ID
+      // username: { original_name: 'userName' }, // 用户名
+      // password: { original_name: 'password_hash' }, // 密码
       // ...
     };
   }
@@ -103,4 +103,4 @@ class ActiveRequestBase extends ActiveRequest {
 // 定义接口列表 - 静态调用
 ActiveRequestBase.api = api;
 
-module.exports = module.exports.default = ActiveRequestBase;
+module.exports.default = module.exports = ActiveRequestBase;

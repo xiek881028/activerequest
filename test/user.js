@@ -70,23 +70,23 @@ module.exports = module.exports.default = class User extends ActiveRequestBase {
    */
   get attributes() {
     return {
-      id: {original_name: 'user_id', primary_key: true, presence: true}, // 用户ID
-      balance: {format: {in: (value) => value / 100, out: 'yuan_to_fen'}}, // 余额
+      id: { original_name: 'user_id', primary_key: true, presence: true }, // 用户ID
+      balance: { format: { in: value => value / 100, out: 'yuan_to_fen' } }, // 余额
       mobile: { // 手机号
         original_name: 'phone',
         validators: [
-          {presence: true, on: ['login', 'signup']},
-          {match: /^\d{11}$/, on: ['signup']},
+          { presence: true, on: [ 'login', 'signup' ] },
+          { match: /^\d{11}$/, on: [ 'signup' ] },
         ],
       },
       password: { // 密码
         validators: [
-          {confirmation: true, on: ['signup']},
-          {presence: true, on: ['login', 'signup']},
+          { confirmation: true, on: [ 'signup' ] },
+          { presence: true, on: [ 'login', 'signup' ] },
         ],
       },
-      password_confirmation: {original_name: 'passwordConfirmation', presence: true}, // 确认密码
-      username: {original_name: 'userName'}, // 用户名
+      password_confirmation: { original_name: 'passwordConfirmation', presence: true }, // 确认密码
+      username: { original_name: 'userName' }, // 用户名
     };
   }
 
