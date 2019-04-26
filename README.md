@@ -2,8 +2,6 @@
 
 资源式请求
 
-## 目录
-
 <details>
 
 * [安装](#install)
@@ -31,4 +29,3 @@ const ActiveRequest = require('activerequest');
 ## License
 
 MIT - [xiewulong](https://github.com/xiewulong)
-
